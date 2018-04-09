@@ -42,6 +42,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private bool m_Jumping;
         private AudioSource m_AudioSource;
 
+        // not default stuff
+        private bool m_Firing;
+        private bool m_Fire;
+        public GameObject weapon;
+
         // Use this for initialization
         private void Start()
         {
@@ -55,6 +60,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+            m_Firing = false;
         }
 
 
@@ -67,6 +73,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
+
+            if (!m_Fire)
+            {
+                m_Fire = CrossPlatformInputManager.GetButtonDown("Fire1");
+            }
+
+
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
             {
@@ -81,6 +94,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
 
             m_PreviouslyGrounded = m_CharacterController.isGrounded;
+
+
         }
 
 
@@ -127,6 +142,31 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
+            if (m_Fire)
+            {
+                weapon = GameObject.Find("Weapon");
+                if(weapon.transform.parent == null)
+                {
+                    weapon.transform.parent = GameObject.Find("FirstPersonCharacter").transform;
+                    weapon.transform.position = GameObject.Find("WeaponPlaceHolder").transform.position;
+                    weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    weapon.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                    m_Firing = false;
+                } else
+                {
+                    weapon.transform.parent = null;
+                    Vector3 ShootDirection = GameObject.Find("FirstPersonCharacter").transform.forward;
+                    GameObject.Find("Weapon").GetComponent<Rigidbody>().AddForce(ShootDirection*20, ForceMode.Impulse);
+                    m_Firing = true;
+                }
+
+                //weapon.SetActive(!weapon.activeSelf);
+                m_Fire = false;
+            }
+            if (m_Firing)
+            {
+                
+            }
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
 
