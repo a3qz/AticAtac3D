@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
 using Random = UnityEngine.Random;
@@ -42,10 +43,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private bool m_Jumping;
         private AudioSource m_AudioSource;
 
+    
         // not default stuff
         private bool m_Firing;
         private bool m_Fire;
         public GameObject weapon;
+        public Text hudText;
 
         // Use this for initialization
         private void Start()
@@ -67,6 +70,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         // Update is called once per frame
         private void Update()
         {
+            hudText.text = "" + DateTime.Now;
             RotateView();
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
@@ -148,6 +152,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 if(weapon.transform.parent == null)
                 {
                     weapon.transform.parent = GameObject.Find("FirstPersonCharacter").transform;
+                    weapon.transform.rotation = GameObject.Find("WeaponPlaceHolder").transform.rotation;
                     weapon.transform.position = GameObject.Find("WeaponPlaceHolder").transform.position;
                     weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
                     weapon.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
@@ -157,7 +162,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     weapon.transform.parent = null;
                     Vector3 ShootDirection = GameObject.Find("FirstPersonCharacter").transform.forward;
                     GameObject.Find("Weapon").GetComponent<Rigidbody>().AddForce(ShootDirection*20, ForceMode.Impulse);
+                    GameObject.Find("Weapon").GetComponent<Rigidbody>().angularVelocity = Vector3.Cross(ShootDirection, new Vector3(0, -30, 0));
                     m_Firing = true;
+                   
                 }
 
                 //weapon.SetActive(!weapon.activeSelf);
