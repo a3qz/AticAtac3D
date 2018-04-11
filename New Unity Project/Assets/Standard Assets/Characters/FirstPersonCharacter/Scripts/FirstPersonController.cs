@@ -147,15 +147,17 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 weapon = GameObject.Find("Weapon");
                 if(weapon.transform.parent == null)
                 {
-                    weapon.transform.parent = GameObject.Find("FirstPersonCharacter").transform;
+                    weapon.transform.parent = GameObject.Find("WeaponBox").transform;
                     weapon.transform.position = GameObject.Find("WeaponPlaceHolder").transform.position;
                     weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
                     weapon.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                    weapon.GetComponent<SphereCollider>().isTrigger = true;
                     m_Firing = false;
                 } else
                 {
                     weapon.transform.parent = null;
                     Vector3 ShootDirection = GameObject.Find("FirstPersonCharacter").transform.forward;
+                    weapon.GetComponent<SphereCollider>().isTrigger = false;
                     GameObject.Find("Weapon").GetComponent<Rigidbody>().AddForce(ShootDirection*20, ForceMode.Impulse);
                     m_Firing = true;
                 }
