@@ -70,7 +70,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         // Update is called once per frame
         private void Update()
         {
-            hudText.text = "" + DateTime.Now;
             RotateView();
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
